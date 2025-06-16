@@ -111,15 +111,6 @@ button {
   }
 }
 
-#drop-area {
-  border: 2px dashed #ccc;
-  margin: 20px;
-  padding: 20px;
-}
-
-#drop-area.hover {
-  border-color: #396cd8;
-}
 
 #file-list {
   list-style: none;

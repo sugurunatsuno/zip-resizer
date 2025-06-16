@@ -1,10 +1,10 @@
 const { invoke } = window.__TAURI__.core;
-const { listen } = window.__TAURI__.event;
+const { open } = window.__TAURI__.dialog;
 
 let greetInputEl;
 let greetMsgEl;
 let fileListEl;
-let dropAreaEl;
+let selectBtnEl;
 let processBtnEl;
 const jobs = [];
 let processing = false;
@@ -17,8 +17,8 @@ async function greet() {
 window.addEventListener("DOMContentLoaded", () => {
   greetInputEl = document.querySelector("#greet-input");
   greetMsgEl = document.querySelector("#greet-msg");
-  dropAreaEl = document.querySelector("#drop-area");
   fileListEl = document.querySelector("#file-list");
+  selectBtnEl = document.querySelector("#select-btn");
   processBtnEl = document.querySelector("#process-btn");
   document.querySelector("#greet-form").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -26,8 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   processBtnEl.addEventListener("click", processFiles);
-
-  setupFileDrop();
+  selectBtnEl.addEventListener("click", selectFiles);
 });
 
 function addFiles(paths) {
@@ -41,18 +40,19 @@ function addFiles(paths) {
   });
 }
 
-async function setupFileDrop() {
-  await listen("tauri://file-drop-hover", () => {
-    dropAreaEl.classList.add("hover");
+async function selectFiles() {
+  const selected = await open({
+    multiple: true,
+    filters: [{ name: "Zip Files", extensions: ["zip"] }],
   });
-  await listen("tauri://file-drop-cancelled", () => {
-    dropAreaEl.classList.remove("hover");
-  });
-  await listen("tauri://file-drop", (event) => {
-    dropAreaEl.classList.remove("hover");
-    addFiles(event.payload);
-  });
+  if (!selected) return;
+  if (Array.isArray(selected)) {
+    addFiles(selected);
+  } else {
+    addFiles([selected]);
+  }
 }
+
 
 async function processFiles() {
   if (processing || jobs.length === 0) return;
