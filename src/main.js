@@ -6,6 +6,9 @@ let greetMsgEl;
 let fileListEl;
 let selectBtnEl;
 let processBtnEl;
+let maxWidthEl;
+let maxHeightEl;
+let qualityEl;
 const jobs = [];
 let processing = false;
 
@@ -20,6 +23,9 @@ window.addEventListener("DOMContentLoaded", () => {
   fileListEl = document.querySelector("#file-list");
   selectBtnEl = document.querySelector("#select-btn");
   processBtnEl = document.querySelector("#process-btn");
+  maxWidthEl = document.querySelector("#max-width");
+  maxHeightEl = document.querySelector("#max-height");
+  qualityEl = document.querySelector("#quality");
   document.querySelector("#greet-form").addEventListener("submit", (e) => {
     e.preventDefault();
     greet();
@@ -57,12 +63,21 @@ async function selectFiles() {
 async function processFiles() {
   if (processing || jobs.length === 0) return;
   processing = true;
+  const parseNumber = (el) => {
+    const v = parseInt(el.value, 10);
+    return Number.isNaN(v) ? null : v;
+  };
+  const opts = {
+    maxWidth: parseNumber(maxWidthEl),
+    maxHeight: parseNumber(maxHeightEl),
+    quality: parseNumber(qualityEl),
+  };
   await Promise.all(
     jobs.map(async (job) => {
       job.statusEl.textContent = "processing";
       job.statusEl.className = "status processing";
       try {
-        await invoke("process_zip_cmd", { path: job.path });
+        await invoke("process_zip_cmd", { path: job.path, options: opts });
         job.statusEl.textContent = "done";
         job.statusEl.className = "status done";
       } catch (e) {
