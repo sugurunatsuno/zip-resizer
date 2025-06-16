@@ -29,8 +29,8 @@ impl Default for ResizeOptions {
 
 impl ResizeOptions {
     pub fn new(max_width: Option<u32>, max_height: Option<u32>, quality: u8) -> Result<Self> {
-        if quality > 100 {
-            return Err(format!("quality must be between 0 and 100: {quality}").into());
+        if quality == 0 || quality > 100 {
+            return Err(format!("quality must be between 1 and 100: {quality}").into());
         }
         Ok(Self {
             max_width,
