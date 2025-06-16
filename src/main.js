@@ -1,8 +1,7 @@
 const { invoke } = window.__TAURI__.core;
 const { open } = window.__TAURI__.dialog;
+const { listen } = window.__TAURI__.event;
 
-let greetInputEl;
-let greetMsgEl;
 let fileListEl;
 let selectBtnEl;
 let processBtnEl;
@@ -12,23 +11,18 @@ let qualityEl;
 const jobs = [];
 let processing = false;
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
-}
+
 
 window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
   fileListEl = document.querySelector("#file-list");
   selectBtnEl = document.querySelector("#select-btn");
   processBtnEl = document.querySelector("#process-btn");
   maxWidthEl = document.querySelector("#max-width");
   maxHeightEl = document.querySelector("#max-height");
   qualityEl = document.querySelector("#quality");
-  document.querySelector("#greet-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    greet();
+
+  listen("tauri://file-drop", (event) => {
+    addFiles(event.payload);
   });
 
   processBtnEl.addEventListener("click", processFiles);
