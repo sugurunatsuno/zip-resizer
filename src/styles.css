@@ -91,6 +91,16 @@ button {
   margin-right: 5px;
 }
 
+#options {
+  margin-top: 10px;
+}
+#options label {
+  margin-right: 10px;
+}
+#options input {
+  width: 80px;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
