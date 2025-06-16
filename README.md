@@ -1,89 +1,31 @@
-# Tauri + Vanilla
+# ZIP画像リサイズツール
 
-This template should help get you started developing with Tauri in vanilla HTML, CSS and Javascript.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
-
-
-# 同人誌画像一括軽量化アプリケーション
-## 概要
-本プロジェクトは、同人誌zipファイル内の高解像度画像を、バッチで一括軽量化・圧縮するアプリケーションです。
-Rust製の高速コアと、TauriによるクロスプラットフォームなGUIを備え、
-CUI（コマンドライン）でもGUIでも使える設計となっています。
-並列画像処理による爆速変換で、大容量同人誌も快適にサイズダウンできます！
+本リポジトリは、ZIP ファイル内に含まれる画像を一括でリサイズし、再圧縮した ZIP を生成するデスクトップアプリケーションです。Rust 製の高速コア処理と Tauri による GUI を組み合わせており、ドラッグ＆ドロップで複数ファイルを指定して簡単に画像を軽量化できます。
 
 ## 特長
-- 同人誌zipファイルを一括指定 → 軽量化済み画像群をまとめて出力
-- 画質・解像度・最大ファイルサイズなどの指定が可能
-- ドラッグ＆ドロップ対応のGUIで複数ファイルをまとめてキュー処理
-- コマンドラインでのバッチ自動化・スクリプト組み込みも簡単
-- 画像ごとに**並列処理（rayon）**で高速変換
+- JPEG/PNG 画像を指定した最大幅・最大高さ・品質でリサイズ
+- 複数の ZIP ファイルをまとめてドラッグ＆ドロップで処理
+- 処理状況を画面上で確認可能
 - クロスプラットフォーム（Windows/Mac/Linux）対応
 
-## 主な用途
-- 電子同人誌ファイルの閲覧用サイズ変換
-- スマホやタブレット用の画像軽量化
-- ストレージ節約やバックアップ用の一括最適化
-- コレクション管理前の前処理自動化
+## 依存環境
+- [Rust](https://www.rust-lang.org/) 1.70 以上
+- [Node.js](https://nodejs.org/) と [pnpm](https://pnpm.io/)
 
-## アーキテクチャ構成
-- Rust（バックエンド・コア処理）
-- 画像変換/圧縮・zip解凍再圧縮・並列処理
-- Tauri（クロスプラットフォームGUI）
-- ドラッグ＆ドロップ・進捗表示・変換キュー管理
-- CLI（コマンドライン実行）
-- スクリプト・自動化利用もOK
+## 実行方法
+1. 依存パッケージをインストールします。
+   ```sh
+   pnpm install
+   ```
+2. アプリケーションを起動します。
+   ```sh
+   pnpm tauri dev
+   ```
 
-## 主な機能
-### CUI（コマンドライン）モード
-- zipファイル指定による一括変換
-- 変換オプション（画質/解像度/サイズ/出力先）
-- 進捗表示・変換レポート出力
-- エラー通知・破損ファイルスキップ
-
-### GUIモード
-- 複数zipファイルのドラッグ＆ドロップ追加
-- ファイルごとの変換キュー管理
-- 変換進捗/成功失敗の表示
-- 設定画面で変換パラメータ編集
-- 処理状況の可視化
-
-## 利用例
-```sh
-# コマンドラインから一括変換
-doujin-image-slimmer -i "original.zip" -o "slimmed.zip" --max-width 1600 --quality 80
-
-# GUIアプリからzipをドラッグ＆ドロップ → 設定を選んで「変換開始」ボタン
-```
-
-## CLIアプリケーションの実行手順
-Rust をインストール後、`src-tauri` ディレクトリで次のコマンドを実行すると CLI 版を試せます。
-
-```sh
-cd src-tauri
-cargo run --bin zip-resizer-cli -- --help
-# 例: 入力 zip を変換して出力する
-cargo run --bin zip-resizer-cli -- -i input.zip -o output.zip --max-width 1600 --quality 80
-```
-
-
-## 依存技術・主なクレート
-- image … 画像変換/圧縮
-- zip … zipファイル展開・再圧縮
-- rayon … 並列バッチ処理
-- clap … コマンドライン引数パース
-- Tauri（GUIフロントエンド、WebフレームワークはReact/Vue/Svelte等お好みで）
-
-## 開発方針・拡張性
-- コア部分（Rust）はCUI/GUI共通利用可能な設計
-- コマンドライン版で自動化やスクリプト組み込みが容易
-- 将来的なWebP/AVIF、PDF、OCR等の拡張も想定
+## CLI について
+`src-tauri/src/cli.rs` にコマンドライン版のサンプル実装がありますが、Cargo.toml にはバイナリとして登録されていません。必要に応じて `[[bin]]` を追記してビルドしてください。
 
 ## ライセンス
-OSS推奨（詳細未定、GPL/MIT/Apacheなどご相談ください）
+OSS を想定しています（詳細未定）。
 
-## その他
-ローカル処理のみで外部通信なし、セキュアなプライバシー志向設計です
-フィードバック・機能要望はIssueまたはPRでどうぞ！
+フィードバックや要望は Issue/Pull Request にてお知らせください。
