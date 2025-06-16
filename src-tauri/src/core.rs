@@ -3,6 +3,7 @@ use std::io::{Read, Write};
 use std::path::Path;
 
 use image::{DynamicImage, ImageOutputFormat};
+use image::GenericImageView;
 use rayon::prelude::*;
 use zip::{ZipArchive, ZipWriter};
 use zip::write::FileOptions;
@@ -79,12 +80,12 @@ pub fn process_zip(input: &Path, output: &Path, opt: &ResizeOptions) -> Result<(
                 match image::load_from_memory(&data) {
                     Ok(img) => {
                         let img = resize_image(img, opt);
-                        let mut buf = Vec::new();
+                        let mut buf = std::io::Cursor::new(Vec::new());
                         if let Err(e) = img.write_to(&mut buf, ImageOutputFormat::Jpeg(opt.quality)) {
                             eprintln!("Failed to encode {name}: {e}");
                             return (name, data);
                         }
-                        (name, buf)
+                        (name, buf.into_inner())
                     }
                     Err(e) => {
                         eprintln!("Failed to decode {name}: {e}");

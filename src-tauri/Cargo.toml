@@ -27,7 +27,4 @@ image = { version = "0.24", default-features = false, features = ["jpeg", "png"]
 zip = "0.6"
 rayon = "1"
 
-[[bin]]
-name = "zip-resizer-cli"
-path = "src/bin/cli.rs"
 
