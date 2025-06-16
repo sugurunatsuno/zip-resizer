@@ -1,3 +1,12 @@
+# Tauri + Vanilla
+
+This template should help get you started developing with Tauri in vanilla HTML, CSS and Javascript.
+
+## Recommended IDE Setup
+
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+
+
 # 同人誌画像一括軽量化アプリケーション
 ## 概要
 本プロジェクトは、同人誌zipファイル内の高解像度画像を、バッチで一括軽量化・圧縮するアプリケーションです。
