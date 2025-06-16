@@ -110,3 +110,36 @@ button {
     background-color: #0f0f0f69;
   }
 }
+
+#drop-area {
+  border: 2px dashed #ccc;
+  margin: 20px;
+  padding: 20px;
+}
+
+#drop-area.hover {
+  border-color: #396cd8;
+}
+
+#file-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.status.pending {
+  color: #777;
+}
+
+.status.processing {
+  color: #396cd8;
+}
+
+.status.done {
+  color: #2d8a34;
+}
+
+.status.failed {
+  color: #c93030;
+}
