@@ -2,11 +2,11 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 
-use image::{DynamicImage, ImageOutputFormat};
 use image::GenericImageView;
+use image::{DynamicImage, ImageOutputFormat};
 use rayon::prelude::*;
-use zip::{ZipArchive, ZipWriter};
 use zip::write::FileOptions;
+use zip::{ZipArchive, ZipWriter};
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -19,26 +19,36 @@ pub struct ResizeOptions {
 
 impl Default for ResizeOptions {
     fn default() -> Self {
-        Self { max_width: None, max_height: None, quality: 80 }
+        Self {
+            max_width: None,
+            max_height: None,
+            quality: 80,
+        }
     }
 }
 
 impl ResizeOptions {
-    pub fn new(
-        max_width: Option<u32>,
-        max_height: Option<u32>,
-        quality: u8,
-    ) -> Result<Self> {
+    pub fn new(max_width: Option<u32>, max_height: Option<u32>, quality: u8) -> Result<Self> {
         if quality > 100 {
             return Err(format!("quality must be between 0 and 100: {quality}").into());
         }
-        Ok(Self { max_width, max_height, quality })
+        Ok(Self {
+            max_width,
+            max_height,
+            quality,
+        })
     }
 }
 
 fn is_image(name: &str) -> bool {
-    matches!(Path::new(name).extension().and_then(|s| s.to_str()).map(|s| s.to_ascii_lowercase()).as_deref(),
-        Some("jpg") | Some("jpeg") | Some("png"))
+    matches!(
+        Path::new(name)
+            .extension()
+            .and_then(|s| s.to_str())
+            .map(|s| s.to_ascii_lowercase())
+            .as_deref(),
+        Some("jpg") | Some("jpeg") | Some("png")
+    )
 }
 
 fn resize_image(img: DynamicImage, opt: &ResizeOptions) -> DynamicImage {
@@ -67,7 +77,9 @@ pub fn process_zip(input: &Path, output: &Path, opt: &ResizeOptions) -> Result<(
     let mut entries = Vec::new();
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
-        if file.is_dir() { continue; }
+        if file.is_dir() {
+            continue;
+        }
         let mut data = Vec::new();
         file.read_to_end(&mut data)?;
         entries.push((file.name().to_string(), data));
@@ -81,7 +93,8 @@ pub fn process_zip(input: &Path, output: &Path, opt: &ResizeOptions) -> Result<(
                     Ok(img) => {
                         let img = resize_image(img, opt);
                         let mut buf = std::io::Cursor::new(Vec::new());
-                        if let Err(e) = img.write_to(&mut buf, ImageOutputFormat::Jpeg(opt.quality)) {
+                        if let Err(e) = img.write_to(&mut buf, ImageOutputFormat::Jpeg(opt.quality))
+                        {
                             eprintln!("Failed to encode {name}: {e}");
                             return (name, data);
                         }
