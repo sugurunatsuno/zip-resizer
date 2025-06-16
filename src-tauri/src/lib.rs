@@ -8,31 +8,39 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn process_zips(paths: Vec<String>) -> Result<(), String> {
-    for p in paths {
-        let input = std::path::PathBuf::from(&p);
+async fn process_zips(paths: Vec<String>) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        for p in paths {
+            let input = std::path::PathBuf::from(&p);
+            let out_name = input
+                .file_stem()
+                .map(|s| s.to_string_lossy().to_string())
+                .unwrap_or_else(|| "output".into());
+            let output = input.with_file_name(format!("{out_name}_resized.zip"));
+
+            if let Err(e) = process_zip(&input, &output, &ResizeOptions::default()) {
+                return Err(e.to_string());
+            }
+        }
+        Ok(())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
+async fn process_zip_cmd(path: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let input = std::path::PathBuf::from(&path);
         let out_name = input
             .file_stem()
             .map(|s| s.to_string_lossy().to_string())
             .unwrap_or_else(|| "output".into());
         let output = input.with_file_name(format!("{out_name}_resized.zip"));
-
-        if let Err(e) = process_zip(&input, &output, &ResizeOptions::default()) {
-            return Err(e.to_string());
-        }
-    }
-    Ok(())
-}
-
-#[tauri::command]
-fn process_zip_cmd(path: String) -> Result<(), String> {
-    let input = std::path::PathBuf::from(&path);
-    let out_name = input
-        .file_stem()
-        .map(|s| s.to_string_lossy().to_string())
-        .unwrap_or_else(|| "output".into());
-    let output = input.with_file_name(format!("{out_name}_resized.zip"));
-    process_zip(&input, &output, &ResizeOptions::default()).map_err(|e| e.to_string())
+        process_zip(&input, &output, &ResizeOptions::default()).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
