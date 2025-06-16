@@ -58,6 +58,17 @@ doujin-image-slimmer -i "original.zip" -o "slimmed.zip" --max-width 1600 --quali
 # GUIアプリからzipをドラッグ＆ドロップ → 設定を選んで「変換開始」ボタン
 ```
 
+## CLIアプリケーションの実行手順
+Rust をインストール後、`src-tauri` ディレクトリで次のコマンドを実行すると CLI 版を試せます。
+
+```sh
+cd src-tauri
+cargo run --bin zip-resizer-cli -- --help
+# 例: 入力 zip を変換して出力する
+cargo run --bin zip-resizer-cli -- -i input.zip -o output.zip --max-width 1600 --quality 80
+```
+
+
 ## 依存技術・主なクレート
 - image … 画像変換/圧縮
 - zip … zipファイル展開・再圧縮

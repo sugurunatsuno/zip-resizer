@@ -22,4 +22,12 @@ tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+image = { version = "0.24", default-features = false, features = ["jpeg", "png"] }
+zip = "0.6"
+rayon = "1"
+
+[[bin]]
+name = "zip-resizer-cli"
+path = "src/bin/cli.rs"
 
